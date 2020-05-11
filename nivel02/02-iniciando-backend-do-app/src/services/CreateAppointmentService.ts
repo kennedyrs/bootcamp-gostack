@@ -4,6 +4,8 @@ import { getCustomRepository } from 'typeorm'
 import AppointmentsRepository from '../repositories/AppointmentsRepository'
 import Appointment from '../models/Appointment'
 
+import AppError from '../errors/AppError'
+
 interface Request {
   provider_id: string
   date: Date
@@ -20,7 +22,7 @@ class CreateAppointmentService {
     )
 
     if (findAppointmentInSameDate) {
-      throw Error('This appointment has already bean taked')
+      throw new AppError('This appointment has already bean taked')
     }
 
     const appointment = appointmentsRepository.create({

@@ -4,16 +4,22 @@ import UpdateUserAvatarService from './UpdateUserAvatarService'
 
 import AppError from '@shared/errors/AppError'
 
-describe('Update user avatar', () => {
-  it('should be able to update a new avatar', async () => {
-    const fakeUserRepository = new FakeUsersRepository()
-    const fakeStorageProvider = new FakeStorageProvider()
+let fakeUserRepository: FakeUsersRepository
+let fakeStorageProvider: FakeStorageProvider
+let updateUserAvatar: UpdateUserAvatarService
 
-    const updateUserAvatar = new UpdateUserAvatarService(
+describe('Update user avatar', () => {
+  beforeEach(() => {
+    fakeUserRepository = new FakeUsersRepository()
+    fakeStorageProvider = new FakeStorageProvider()
+
+    updateUserAvatar = new UpdateUserAvatarService(
       fakeUserRepository,
       fakeStorageProvider,
     )
+  })
 
+  it('should be able to update a new avatar', async () => {
     const user = await fakeUserRepository.create({
       name: 'Batman',
       email: 'batman@gothan.com',
@@ -29,15 +35,7 @@ describe('Update user avatar', () => {
   })
 
   it('should not be able to update a new avatar if user not exists', async () => {
-    const fakeUserRepository = new FakeUsersRepository()
-    const fakeStorageProvider = new FakeStorageProvider()
-
-    const updateUserAvatar = new UpdateUserAvatarService(
-      fakeUserRepository,
-      fakeStorageProvider,
-    )
-
-    expect(
+    await expect(
       updateUserAvatar.execute({
         user_id: 'batman',
         avatarFilename: 'avatar.png',
@@ -46,15 +44,7 @@ describe('Update user avatar', () => {
   })
 
   it('should delete avatar when updating a new one', async () => {
-    const fakeUserRepository = new FakeUsersRepository()
-    const fakeStorageProvider = new FakeStorageProvider()
-
     const deleteFile = jest.spyOn(fakeStorageProvider, 'deleteFile')
-
-    const updateUserAvatar = new UpdateUserAvatarService(
-      fakeUserRepository,
-      fakeStorageProvider,
-    )
 
     const user = await fakeUserRepository.create({
       name: 'Batman',

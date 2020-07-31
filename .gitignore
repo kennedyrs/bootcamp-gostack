@@ -38,7 +38,8 @@ local.properties
 .vscode/
 
 # node.js
-#
+.env
+ormconfig.json
 
 npm-debug.log
 yarn-error.log

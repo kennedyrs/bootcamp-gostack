@@ -22,6 +22,7 @@ import { FiPower, FiClock } from 'react-icons/fi'
 import { useAuth } from '../../hooks/AuthContext'
 import api from '../../services/api'
 import { parseISO } from 'date-fns/esm'
+import { Link } from 'react-router-dom'
 
 interface MonthAvailability {
   day: number
@@ -144,7 +145,9 @@ const Dashboard: React.FC = () => {
 
             <div>
               <span>Bem-Vindo,</span>
-              <strong>{user.name}</strong>
+              <Link to="/profile">
+                <strong>{user.name}</strong>
+              </Link>
             </div>
           </Profile>
 

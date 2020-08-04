@@ -8,14 +8,20 @@ interface SignInCredentials {
 }
 
 interface AuthContextData {
-  user: object
+  user: User
   signIn(credentials: SignInCredentials): Promise<void>
   signOut(): void
 }
 
+interface User {
+  id: string
+  avatar_url: string
+  name: string
+}
+
 interface AuthState {
   token: string
-  user: object
+  user: User
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
@@ -26,6 +32,8 @@ const AuthProvider: React.FC = ({ children }) => {
     const token = localStorage.getItem('@GoBarber:token')
 
     if (token && user) {
+      api.defaults.headers.authorization = `Bearer ${token}`
+
       return { token, user: JSON.parse(user) }
     }
 
@@ -40,8 +48,10 @@ const AuthProvider: React.FC = ({ children }) => {
 
     const { token, user } = response.data
 
-    localStorage.setItem('@GoBarber:user', JSON.stringify(user))
     localStorage.setItem('@GoBarber:token', token)
+    localStorage.setItem('@GoBarber:user', JSON.stringify(user))
+
+    api.defaults.headers.authorization = `Bearer ${token}`
 
     setData(response.data)
   }, [])
